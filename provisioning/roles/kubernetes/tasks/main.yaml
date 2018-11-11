@@ -1,0 +1,49 @@
+---
+- name: add keys for kubernetes repository
+  apt_key: 
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: add kubernetes repository
+  apt_repository: 
+    repo: deb [arch=amd64] http://apt.kubernetes.io/ kubernetes-xenial main 
+    state: present
+    filename: 'kubernetes'
+
+- name: install kubernetes engine
+  apt:
+    package: ['kubectl', 'kubeadm']
+    state: present
+
+- name: initialize kubernetes
+  shell: kubeadm init --apiserver-advertise-address={{ master_ip }} --pod-network-cidr=10.244.0.0/16
+  args:
+    creates: /etc/kubernetes/manifests/kube-apiserver.yaml
+  delegate_to: "{{ master_node }}"
+  run_once: true
+  become: true
+
+- name: capture kubernetes join command
+  shell: kubeadm token create --print-join-command
+  delegate_to: "{{ master_node }}"
+  become: true
+  run_once: true
+  register: join_command
+
+- name: join other nodes
+  shell: "{{ join_command.stdout }}"
+  when:  master_node != inventory_hostname
+  become: true
+  
+- name: configure kubernetes for local user
+  shell: mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && chown $(id -u):$(id -g) $HOME/.kube/config
+  args:
+    creates: $HOME/.kube/config
+  delegate_to: "{{ master_node }}"
+  run_once: true
+  become: true
+
+- name: apply network layer
+  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
+  delegate_to: "{{ master_node }}"
+  run_once: true
+  become: true

@@ -1,0 +1,32 @@
+---
+- name: configure timezone
+  command: timedatectl set-timezone America/New_York
+
+- name: disable timesyncd
+  command: timedatectl set-ntp off
+
+- name: install required packages
+  apt: 
+    state: present 
+    package: ['unzip', 'dnsmasq', 'ntp', 'apt-transport-https', 'bridge-utils', 'ipvsadm']
+
+- name: configure dnsmasq
+  copy: src=10-consul.dnsmasq.conf dest=/etc/dnsmasq.d/10-consul
+  notify:
+  - restart dnsmasq
+
+- name: disable swap
+  shell: swapoff --all
+
+- name: enable dnsmasq
+  systemd: enabled=true state=started name=dnsmasq
+
+- sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    state: present
+
+- sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    state: present

@@ -1,0 +1,6 @@
+---
+- name: restart dnsmasq
+  systemd: state=restarted name=dnsmasq
+
+- name: restart etcd
+  systemd: state=restarted name=etcd
