@@ -1,0 +1,21 @@
+---
+- name: stage ceph configuration
+  copy:
+    src: "../files/{{ item }}"
+    dest: "/home/vagrant/{{ item }}"
+    owner: vagrant
+    group: vagrant
+  with_items:
+  - operator.yaml 
+  - cluster.yaml
+  - storageclass.yaml
+
+- name: deploy ceph configuration to kubernetes
+  k8s:
+    kubeconfig: /home/vagrant/.kube/config
+    src: "/home/vagrant/{{ item }}"
+    state: present
+  with_items:
+  - operator.yaml 
+  - cluster.yaml
+  - storageclass.yaml

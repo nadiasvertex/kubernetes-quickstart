@@ -1,0 +1,35 @@
+---
+- name: install python setuptools
+  apt:
+    name: ['python-setuptools', 'python3-setuptools', 'python-pip', 'python3-pip']
+    state: present
+
+- name: install kubernetes python api
+  pip:
+    name: openshift
+    state: present 
+
+- name: make user config folder
+  file:
+    path: /home/vagrant/.kube
+    state: directory
+
+- name: configure kubernetes for local user
+  copy:
+    remote_src: true
+    src: /etc/kubernetes/admin.conf
+    dest: /home/vagrant/.kube/config
+    owner: vagrant
+    group: vagrant
+  become: true
+
+- name: fetch network overlay configuration    
+  get_url:
+    url: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    dest: /home/vagrant/kube-flannel.yml
+    
+- name: deploy network overlay configuration to kubernetes
+  k8s:
+    kubeconfig: /home/vagrant/.kube/config
+    src: /home/vagrant/kube-flannel.yml
+    state: present

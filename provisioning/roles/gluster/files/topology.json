@@ -1,0 +1,98 @@
+{
+  "clusters": [
+    {
+      "nodes": [
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "machine2"
+              ],
+              "storage": [
+                "192.168.77.3"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc",
+            "/dev/sdd",
+            "/dev/sde"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "machine3"
+              ],
+              "storage": [
+                "192.168.77.4"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc",
+            "/dev/sdd",
+            "/dev/sde"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "machine4"
+              ],
+              "storage": [
+                "192.168.77.5"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc",
+            "/dev/sdd",
+            "/dev/sde"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "machine5"
+              ],
+              "storage": [
+                "192.168.77.6"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc",
+            "/dev/sdd",
+            "/dev/sde"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "machine6"
+              ],
+              "storage": [
+                "192.168.77.7"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc",
+            "/dev/sdd",
+            "/dev/sde"
+          ]
+        }
+      ]
+    }
+  ]
+}

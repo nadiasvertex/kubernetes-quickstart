@@ -4,7 +4,7 @@
   become: yes
   
   tasks:
-  - name: install python 2
+  - name: install python 2 
     raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
 - hosts: all
@@ -20,3 +20,8 @@
 
  
  
+- hosts: machine2
+  become: yes
+  roles:
+  - kmaster
+  - ceph 

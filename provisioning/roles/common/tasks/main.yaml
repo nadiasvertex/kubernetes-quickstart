@@ -8,7 +8,7 @@
 - name: install required packages
   apt: 
     state: present 
-    package: ['unzip', 'dnsmasq', 'ntp', 'apt-transport-https', 'bridge-utils', 'ipvsadm']
+    package: ['unzip', 'dnsmasq', 'ntp', 'apt-transport-https', 'software-properties-common', 'bridge-utils', 'ipvsadm']
 
 - name: configure dnsmasq
   copy: src=10-consul.dnsmasq.conf dest=/etc/dnsmasq.d/10-consul
@@ -24,9 +24,17 @@
 - sysctl:
     name: net.ipv4.ip_forward
     value: 1
-    state: present
 
 - sysctl:
     name: net.bridge.bridge-nf-call-iptables
     value: 1
+  retries: 3
+  delay: 5
+
+- modprobe:
+    name: "{{ item }}" 
     state: present
+  with_items:
+    - dm_snapshot
+    - dm_mirror
+    - dm_thin_pool

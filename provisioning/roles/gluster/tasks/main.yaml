@@ -1,0 +1,28 @@
+---
+- name: add gluster repository
+  apt_repository: 
+    repo: ppa:gluster/glusterfs-5
+    state: present
+
+- name: install gluster
+  apt:
+    package: glusterfs-server
+    state: present
+
+- name: fetch gluster deploy script
+  get_url:
+    url: https://github.com/gluster/gluster-kubernetes/archive/v1.2.0.tar.gz
+    dest: /tmp/gluster.tar.gz
+
+- name: unarchive deploy script
+  unarchive:
+    remote_src: true
+    src: /tmp/gluster.tar.gz
+    dest: /tmp/
+    group: vagrant
+    owner: vagrant
+
+- name: copy topology
+  copy:
+    src: ../files/topology.json
+    dest: /tmp/gluster-kubernetes-1.2.0/deploy/
