@@ -17,11 +17,14 @@
   roles:
   - docker
   - kubernetes
-
- 
  
 - hosts: machine2
   become: yes
   roles:
   - kmaster
   - ceph 
+  
+- hosts: orchestrated
+  become: yes
+  roles:
+  - kcluster

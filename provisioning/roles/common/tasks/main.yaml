@@ -8,28 +8,27 @@
 - name: install required packages
   apt: 
     state: present 
-    package: ['unzip', 'dnsmasq', 'ntp', 'apt-transport-https', 'software-properties-common', 'bridge-utils', 'ipvsadm']
-
-- name: configure dnsmasq
-  copy: src=10-consul.dnsmasq.conf dest=/etc/dnsmasq.d/10-consul
-  notify:
-  - restart dnsmasq
-
-- name: disable swap
-  shell: swapoff --all
-
-- name: enable dnsmasq
-  systemd: enabled=true state=started name=dnsmasq
+    package: ['unzip', 'ntp', 'apt-transport-https', 'software-properties-common', 'bridge-utils', 'ipvsadm']
 
 - sysctl:
     name: net.ipv4.ip_forward
     value: 1
 
-- sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: 1
-  retries: 3
-  delay: 5
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+# - sysctl:
+#     name: net.bridge.bridge-nf-call-iptables
+#     value: 1
+#   retries: 3
+#   delay: 5
 
 - modprobe:
     name: "{{ item }}" 
@@ -38,3 +37,11 @@
     - dm_snapshot
     - dm_mirror
     - dm_thin_pool
+
+- name: open access to node's private network interface
+  iptables:
+    chain: INPUT
+    in_interface: enp0s8  
+    jump: ACCEPT
+    action: insert
+    state: present

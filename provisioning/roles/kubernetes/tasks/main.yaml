@@ -13,33 +13,3 @@
   apt:
     package: ['kubectl', 'kubeadm']
     state: present
-
-- name: stage kubernetes containers
-  shell: kubeadm config images pull
-  args:
-    creates: /etc/kubernetes/manifests/kube-apiserver.yaml
-  delegate_to: "{{ master_node }}"
-  run_once: true
-  become: true
-
-- name: initialize kubernetes
-  shell: kubeadm init --apiserver-advertise-address={{ master_ip }} --pod-network-cidr=10.244.0.0/16
-  args:
-    creates: /etc/kubernetes/kubelet.conf
-  delegate_to: "{{ master_node }}"
-  run_once: true
-  become: true
-
-- name: capture kubernetes join command
-  shell: kubeadm token create --print-join-command
-  delegate_to: "{{ master_node }}"
-  become: true
-  run_once: true
-  register: join_command
-
-- name: join other nodes
-  shell: "{{ join_command.stdout }} && touch .kube.joined"
-  args:
-    creates: .kube.joined
-  when:  master_node != inventory_hostname
-  become: true

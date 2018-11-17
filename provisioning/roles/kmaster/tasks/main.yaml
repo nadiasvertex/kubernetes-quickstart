@@ -9,6 +9,18 @@
     name: openshift
     state: present 
 
+- name: stage kubernetes containers
+  shell: kubeadm config images pull
+  args:
+    creates: /etc/kubernetes/manifests/kube-apiserver.yaml
+  become: true
+
+- name: initialize kubernetes
+  shell: kubeadm init --apiserver-advertise-address={{ master_ip }} --pod-network-cidr=10.244.0.0/16
+  args:
+    creates: /etc/kubernetes/kubelet.conf
+  become: true
+
 - name: make user config folder
   file:
     path: /home/vagrant/.kube

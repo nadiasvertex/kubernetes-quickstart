@@ -74,8 +74,8 @@ spec:
   resources:
   storage: # cluster level storage configuration and selection
     useAllNodes: true
-    useAllDevices: true
-    deviceFilter:
+    useAllDevices: false
+    deviceFilter: ^sd[c-e]
     location:
     config:
       # The default and recommended storeType is dynamically set to bluestore for devices and filestore for directories.
