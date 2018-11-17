@@ -3,7 +3,7 @@
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/xenial64"
-  N = 6
+  N = 5
   D = 3
   (1..N).each do |machine_id|
      config.vm.define "machine#{machine_id}" do |machine|
@@ -28,8 +28,7 @@ Vagrant.configure(2) do |config|
               ansible.limit = "all"
               ansible.playbook = "provisioning/playbook.yaml"
               ansible.groups = {
-                "load_balancer" => ["machine1"],
-                "orchestrated"  => ["machine2", "machine3", "machine4", "machine5", "machine6"]
+                "orchestrated"  => ["machine1", "machine2", "machine3", "machine4", "machine5"]
               }
            end
         end

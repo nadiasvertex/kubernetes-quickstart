@@ -24,19 +24,15 @@
   command: swapoff -a
   when: ansible_swaptotal_mb > 0
 
-# - sysctl:
-#     name: net.bridge.bridge-nf-call-iptables
-#     value: 1
-#   retries: 3
-#   delay: 5
-
 - modprobe:
     name: "{{ item }}" 
     state: present
   with_items:
-    - dm_snapshot
-    - dm_mirror
-    - dm_thin_pool
+    - br_netfilter
+
+- sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
 
 - name: open access to node's private network interface
   iptables:
