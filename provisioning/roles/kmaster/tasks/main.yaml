@@ -36,8 +36,8 @@
   become: true
 
 - name: fetch network overlay configuration    
-  get_url:
-    url: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  copy:
+    src: kube-flannel.yml 
     dest: /home/vagrant/kube-flannel.yml
     
 - name: deploy network overlay configuration to kubernetes
