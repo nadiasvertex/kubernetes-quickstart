@@ -8,7 +8,7 @@ Vagrant.configure(2) do |config|
   (1..N).each do |machine_id|
      config.vm.define "machine#{machine_id}" do |machine|
         machine.vm.hostname = "machine#{machine_id}"
-        machine.vm.network "private_network", ip: "192.168.77.#{1+machine_id}", netmask: 24
+        machine.vm.network "private_network", ip: "192.168.77.#{1+machine_id}", netmask: "255.255.255.0"
         config.vm.provider "virtualbox" do |v|
          v.memory = 2048
         end 
